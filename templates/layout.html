@@ -5,15 +5,13 @@
     <head>
 
         <meta charset="utf-8">
-        <meta name="viewport" content="initial-scale=1, width=device-width">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        <!-- http://getbootstrap.com/docs/5.3/ -->
+        <!-- https://getbootstrap.com/docs/5.3/ -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-
         <link href="/static/styles.css" rel="stylesheet">
 
-        <title>SOMETHING: {% block title %}{% endblock %}</title>
+        <title>Books {% block title %}{% endblock %}</title>
 
     </head>
 
@@ -46,6 +44,20 @@
                 </div>
             </div>
         </nav>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <header>
+                    <div class="alert alert-primary mb-0 text-center" role="alert">
+                        {% for message in messages %}
+                            {{ message }}
+                            <br>
+                        {% endfor %}
+                    </div>
+                </header>
+            {% endif %}
+        {% endwith %}
+
             
         <main class="container py-5 text-center">
             {% block main %}{% endblock %}
@@ -66,6 +78,13 @@
         });
 
     </script>
+
+    <!-- http://getbootstrap.com/docs/5.3/ -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
     <div class="fixed-bottom">
         <p style="text-align: center">&copy Jonah Werhan 2024</p>
     </div>
