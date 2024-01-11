@@ -1,12 +1,12 @@
-import os 
+import os, datetime
 
-# import datetime
 from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 import secrets
 from functions import login_required, errorPage
+
 
 # Configure application
 app = Flask(__name__)
@@ -42,7 +42,29 @@ def addNew():
     """Add new entry to dataase"""
     if request.method == "POST":
         # Do things with the submitted data
-        return errorPage("TODO:")
+        bookTitle = request.form.get("title")
+        bookAuthor = request.form.get("author")
+        bookRating = request.form.get("rating")
+        bookReview = request.form.get("review")
+        if not bookTitle or not bookAuthor or not bookRating or not bookReview:
+            return errorPage("Ensure all fields have valid information.")
+        
+        # Get the current date and time
+        currentDatetime = datetime.now()
+        currentDate = currentDatetime.strftime("%Y-%m-%d")
+        currentTime = currentDatetime.strftime("%H:%M:%S")
+
+        db.execute("""INSERT INTO review (
+                   user_id,
+                   title,
+                   author,
+                   star_rating,
+                   review,
+                   date,
+                   time
+        ) VALUES (?)""", (session["user_id"], bookTitle, bookAuthor, bookRating, bookReview, currentDate, currentTime))
+
+        return redirect("/")
     else:
         return render_template("add-new.html")
 
