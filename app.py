@@ -14,8 +14,8 @@ app = Flask(__name__)
 # Configure session to use filesystem (instead of signed cookies)
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
-app.secret_key = secrets.token_hex(16)
 Session(app)
+
 
 # Configure CS50 Library to use SQLite database
 db = SQL("sqlite:///books.db")
@@ -33,7 +33,19 @@ def after_request(response):
 @login_required
 def index():
     """Logged in home page"""
+    return render_template("index.html")
     
+
+@app.route("/add-new", methods=["POSt", "GET"])
+@login_required
+def addNew():
+    """Add new entry to dataase"""
+    if request.method == "POST":
+        # Do things with the submitted data
+        return errorPage("TODO:")
+    else:
+        return render_template("add-new.html")
+
 
 # Login page (main landing paige
 @app.route("/login", methods=["GET", "POST"])
@@ -65,7 +77,7 @@ def login():
         session["user_id"] = rows[0]["id"]
 
         # Return logged in home page if passed checks
-        return render_template("/")
+        return render_template("/index")
 
     # If loading page for the first time
     else:
