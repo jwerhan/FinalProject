@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Review - {{title}}
+{% endblock %}
+
+{% block main %}
+
+<div class="card">
+    <div class="card-header">
+    <b>"{{title}}"</b>  by {{author}}<br>{{ (star * (star_rating | int)) | safe }} <br>{{date}} - {{time}}
+    </div>
+    <div class="card-body">
+      <blockquote class="blockquote mb-0">
+        <p>{{ review }}</p>
+        <footer class="blockquote-footer"><cite title="Source Title">Review by {{username}} </cite></footer>
+      </blockquote>
+    </div>
+</div>
+  
+{% endblock %}

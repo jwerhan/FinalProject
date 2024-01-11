@@ -1,10 +1,10 @@
-import os, datetime
+import os
 
+from datetime import datetime
 from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
-import secrets
 from functions import login_required, errorPage
 
 
@@ -20,7 +20,6 @@ Session(app)
 # Configure CS50 Library to use SQLite database
 db = SQL("sqlite:///books.db")
 
-# Logged in home page
 @app.after_request
 def after_request(response):
     """Ensure responses aren't cached"""
@@ -29,14 +28,21 @@ def after_request(response):
     response.headers["Pragma"] = "no-cache"
     return response
 
+# Logged in home page
 @app.route("/", methods=["GET"])
 @login_required
 def index():
-    """Logged in home page"""
-    return render_template("index.html")
+    """Logged in home page displays most recent additions to database for use (max of 4)"""
+    reviews = db.execute("SELECT title, author, star_rating, date FROM review WHERE user_id = ? ORDER BY date DESC, time DESC", session["user_id"])
+    count = db.execute("SELECT COUNT(*) FROM review WHERE user_id = ?", session["user_id"])
+    length = count[0]["COUNT(*)"]
+    if length > 4:
+        length = 4
+    star = "&#9733; "
+    return render_template("index.html", reviews=reviews, length=int(length), star=star)
     
 
-@app.route("/add-new", methods=["POSt", "GET"])
+@app.route("/add-new", methods=["POST", "GET"])
 @login_required
 def addNew():
     """Add new entry to dataase"""
@@ -44,11 +50,17 @@ def addNew():
         # Do things with the submitted data
         bookTitle = request.form.get("title")
         bookAuthor = request.form.get("author")
-        bookRating = request.form.get("rating")
+        bookRating = int(request.form.get("rating"))
         bookReview = request.form.get("review")
         if not bookTitle or not bookAuthor or not bookRating or not bookReview:
             return errorPage("Ensure all fields have valid information.")
         
+        # Check if this user already has a review for this book
+        count = db.execute("SELECT COUNT(*) FROM review WHERE user_id = ? AND title = ? AND author = ?", session["user_id"], bookTitle, bookAuthor)
+        count = count[0]["COUNT(*)"] if count else 0
+        if count != 0:
+            return errorPage("You have already reviewed this book, if you would like to update this review go to the update page")
+
         # Get the current date and time
         currentDatetime = datetime.now()
         currentDate = currentDatetime.strftime("%Y-%m-%d")
@@ -68,6 +80,27 @@ def addNew():
     else:
         return render_template("add-new.html")
 
+
+@app.route("/view-review", methods=["POST"])
+@login_required
+def viewReview():
+    if request.method != "POST":
+        return errorPage("Invalid Method", 405)
+    title = request.form.get("review_title")
+    users = db.execute("SELECT * FROM users WHERE id = ?", session["user_id"])
+    row = db.execute("""SELECT * FROM review
+                        WHERE user_id = ?
+                        AND title = ?""", 
+                        session["user_id"], title)
+    author = row[0]["author"]
+    star_rating = row[0]["star_rating"]
+    review = row[0]["review"]
+    date = row[0]["date"]
+    time = row[0]["time"]
+    star = "&#9733; "
+    username = users[0]["username"]
+
+    return render_template("/view-review.html", title=title, author=author, star_rating=star_rating, review=review, star=star, username=username, date=date, time=time)
 
 # Login page (main landing paige
 @app.route("/login", methods=["GET", "POST"])

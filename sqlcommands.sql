@@ -25,3 +25,6 @@ INSERT INTO review (
     time
 )
 VALUES (?);
+
+
+SELECT title, author, star_rating FROM review WHERE user_id = (?)
