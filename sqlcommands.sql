@@ -8,10 +8,12 @@ CREATE TABLE users (
 
 CREATE TABLE review (
     user_id INTEGER NOT NULL,
+    title TEXT NOT NULL,
+    author TEXT NOT NULL,
     star_rating INTEGER,
     review TEXT NOT NULL,
     date TEXT NOT NULL,
-    time TEXRT NOT NULL,
+    time TEXT NOT NULL,
     FOREIGN KEY(user_id) REFERENCES users(id)
 );
 
