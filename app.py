@@ -114,22 +114,26 @@ def viewReview():
     return render_template("/view-review.html", title=title, author=author, star_rating=star_rating, 
                            review=review, star=star, username=username, date=date, time=time)
 
-# Login page (main landing paige
+# Login route
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    """Login new users"""
-    
-    # Clear session
+    """Log user in"""
+
+    # Forget any user_id
     session.clear()
 
-    # If form login submitted
+    # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
-        # Perform checks on form inputs (check for valid username and pasword)
+
+        # Ensure username was submitted
         if not request.form.get("username"):
-            return errorPage("Please enter a username", 400)
-        if not request.form.get("password"):
+            return errorPage("Please enter a valid username", 400)
+
+        # Ensure password was submitted
+        elif not request.form.get("password"):
             return errorPage("Please enter a valid password", 400)
-        
+
+        # Get username and password from form data
         username = request.form.get("username")
         password = request.form.get("password")
 
@@ -137,57 +141,70 @@ def login():
         rows = db.execute(
             "SELECT * FROM users WHERE username = ?", username)
         
+        # Ensure username exists and password is correct
         if len(rows) != 1 or not check_password_hash(rows[0]["hash"], password):
             return errorPage("Incorrect username or password", 403)
         
-        # Remember user
+        # Remember which user has logged in
         session["user_id"] = rows[0]["id"]
 
-        # Return logged in home page if passed checks
-        return render_template("/index")
-
-    # If loading page for the first time
+        # User reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template("/login.html")
     
 # Registration route
 @app.route("/register", methods=["GET", "POST"])
 def register():
-    """Refister new user"""
+    """Register new user"""
 
+    # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
-        # Check for valid input
+
+        # Ensure username was submitted
         if not request.form.get("username"):
             return errorPage("Please enter a valid username", 400)
+
+        # Ensure password was submitted
         if not request.form.get("password"):
             return errorPage("Please enter a valid password", 400)
+
+        # Ensure password confirmation was submitted
         elif not request.form.get("confirmation"):
             return errorPage("please confirm password", 400)
+
+        # Ensure password and confirmation match
+        elif request.form.get("password") != request.form.get("confirmation"):
+            return errorPage("Passwords do not match", 400)
 
         username = request.form.get("username")
         password = request.form.get("password")
 
-        # Check to see if username is already in the database
+        # Query database for username
         count = db.execute("SELECT COUNT(*) FROM users WHERE username = ?", username)
+
+        # Ensure username does not already exist
         if int(count[0]["COUNT(*)"]) != 0:
-            return errorPage("Username is already in use", 400)
+            return errorPage("Username is already in use", 409)
         
+        # Generate password hash
         hashkey = generate_password_hash(password, method="pbkdf2", salt_length=16)
-        # add username and haskey to db
+
+        # Insert new user into database
         db.execute("INSERT INTO users (username, hash) VALUES (?)", (username, hashkey))
 
-        # Ensure username was added to database
-        rows = db.execute(
-            "SELECT * FROM users WHERE username = ?", request.form.get("username")
-        )
+        # Query database for username
+        rows = db.execute("SELECT * FROM users WHERE username = ?", username)
 
+        # Ensure username exists and password is correct
         if len(rows) != 1 or not check_password_hash(
             rows[0]["hash"], request.form.get("password")
         ):
             return errorPage("invalid username and/or password", 400)
+
+    # User reached route via GET (as by clicking a link or via redirect)
     elif request.method == "GET":
         return render_template("/register.html")
     
-    # Send new users to home so they can login
+    # Flash success message and redirect user to login page
     flash("Registration successful! Please log in.")
     return redirect("/login")
