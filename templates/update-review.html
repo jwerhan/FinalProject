@@ -23,8 +23,14 @@
         <div class="form-group mb-3">
             <textarea name="review" class="form-control autosize" id="addNewFormText1" style="max-height: 50vh;">{{review}}</textarea>
         </div>        
-
-        <button class="btn mt-3 btn-primary" type="submit">Update Review</button>
+        <div class="d-flex justify-content-center gap-2">
+            <form action="/delete-review" method="GET" class="mb-3">
+                <input type="hidden" name="q" class="d-none" value="{{ title }}">
+                <input type="hidden" name="author" class="d-none" value="{{ author }}">
+                <button class="btn btn-danger" type="submit" style="margin-top: 0;" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete Review">Delete Review</button>
+            </form>
+            <button class="btn btn-primary" type="submit">Update Review</button>
+        </div>
     </form>
 
     <script>

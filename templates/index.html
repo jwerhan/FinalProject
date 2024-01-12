@@ -17,6 +17,11 @@
                 <h5 class="card-title">{{ reviews[n]["title"] }}</h5> 
                 <p class="card-text">By {{ reviews[n]["author"] }}<br> Rating: {{ (star * (reviews[n]["rating"] | int)) | safe }}</p>
                 <div class="d-flex justify-content-center gap-2">
+                    <form action="/delete-review" method="GET" class="mb-3">
+                        <input type="hidden" name="q" class="d-none" value="{{ reviews[n]['title'] }}">
+                        <input type="hidden" name="author" class="d-none" value="{{ reviews[n]['author'] }}">
+                        <button class="btn btn-danger" type="submit" style="margin-top: 0;" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete Review">Delete Review</button>
+                    </form>
                     <form action="/view-review" method="GET">
                         <input type="hidden" name="review_title" class="d-none" value="{{ reviews[n]['title'] }}">
                         <input type="hidden" name="review_author" class="d-none" value="{{ reviews[n]['username'] }}">

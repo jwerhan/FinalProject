@@ -13,9 +13,14 @@ from flask import url_for
 # Configure application
 app = Flask(__name__)
 
-# Configure session to use filesystem (instead of signed cookies)
+# Configure session to use cookies
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
+app.config["SESSION_COOKIE_SECURE"] = True  # Enable secure cookies
+app.config["SESSION_COOKIE_HTTPONLY"] = True  # Enable HttpOnly cookies
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"  # Set SameSite attribute to Lax
+# Set secret key
+app.secret_key = os.urandom(24)
 Session(app)
 
 
@@ -36,6 +41,9 @@ def after_request(response):
 def index():
     """Logged in home page displays most recent additions to database for use (max of 4)"""
 
+    if not session["user_id"]:
+        return redirect("/login")
+
     reviews = db.execute("""SELECT review.*, users.username FROM review 
                          JOIN users ON users.id = review.user_id
                          WHERE review.user_id = ? 
@@ -53,51 +61,57 @@ def index():
     return render_template("index.html", reviews=reviews, length=length, star=star)
     
 
-# Logged in search result page
 @app.route("/search", methods=["GET"])
-@login_required
 def search():
     """Logged in search page displays search results for user"""
     if request.method == "GET":
         query = request.args.get("q")
-        q=query
+        q = query
         if not query:
             return errorPage("Please enter a valid search query", 400)
+
         query = "%" + query + "%"
-        
+
+        searchdb = SQL("sqlite:///books.db")
+
+
         # Pagination parameters
         page = request.args.get("page", default=1, type=int)
         results_per_page = 10
         offset = (page - 1) * results_per_page
-        
+        star = "&#9733; "
+
         # Retrieve search results with pagination
-        rows = db.execute("""SELECT review.title, review.author, review.rating, review.date, users.username 
-                     FROM review 
-                     JOIN users ON users.id = review.user_id
-                     WHERE (review.title LIKE ? OR review.author LIKE ?) 
-                     ORDER BY review.date DESC, review.time DESC
-                     LIMIT ? OFFSET ?""", 
-                     query, query, results_per_page, offset)
-        
+        rows = searchdb.execute("""SELECT review.title, review.author, review.rating, review.date, review.time, users.username
+                            FROM review 
+                            JOIN users ON users.id = review.user_id
+                            WHERE (TRIM(review.title) LIKE ? OR TRIM(review.author) LIKE ?) 
+                            LIMIT ? OFFSET ?""", 
+                            query, query, results_per_page, offset)
+
         # Count total number of search results
-        count = db.execute("""SELECT COUNT(*) FROM review 
+        count = searchdb.execute("""SELECT COUNT(*) FROM review 
                            WHERE (title LIKE ? OR author LIKE ?)""", 
                             query, query)
         total_results = count[0]["COUNT(*)"]
-        
+
         # Calculate total number of pages
         total_pages = ceil(total_results / results_per_page)
-        
-        star = "&#9733; "
+
+        if total_results == 1:
+            # If there's only one result, render the template with the single result
+            return render_template("search.html", reviews=rows, total_pages=total_pages, query=q,
+                                current_page=page, star=star, start=1, end=1)
+
         start = (page - 1) * results_per_page + 1  # Calculate the starting index of the current page
-        end = min(start + results_per_page - 1, total_results)  # Calculate the ending index of the current page
-        
+        end = min(start + results_per_page, total_results)  # Calculate the ending index of the current page
+
         if total_results == 0:
             return errorPage("No results found", 404)
 
         return render_template("search.html", reviews=rows, total_pages=total_pages, query=q,
-                               current_page=page, star=star, start=start, end=end) 
-
+                               current_page=page, star=star, start=start, end=end)
+    
 @app.route("/add-new", methods=["POST", "GET"])
 @login_required
 def addNew():
@@ -162,7 +176,7 @@ def updateReview():
         author = request.form.get('author')
         rating = request.form.get('rating')
         review = request.form.get('review')  
-        star= "&#9733; "      
+              
         count = db.execute("""SELECT COUNT(*) FROM review 
                            WHERE user_id = ? AND title = ? AND author = ?""",
                             session["user_id"], title, author)
@@ -194,9 +208,10 @@ def updateReview():
         author = row[0]["author"]
         rating = row[0]["rating"]
         review = row[0]["review"]
+        username = db.execute("SELECT username FROM users WHERE id = ?", session["user_id"])
 
         return render_template("/update-review.html", title=title, author=author, 
-                               rating=rating, review=review)
+                               rating=rating, review=review, username=username)
 
 @app.route("/update-search", methods=["GET"])
 @login_required
@@ -258,7 +273,22 @@ def login():
 
     # Add a return statement here to return a valid response
     return redirect("/")  # Replace "/" with the desired redirect URL
-        
+
+@app.route("/delete-review", methods=["POST", "GET"])
+@login_required
+def deleteReview():
+    if request.method == "POST":
+        title = request.form.get("q")
+        author = request.form.get("author")
+        db.execute("DELETE * FROM review WHERE user_id = ? AND title = ? AND author = ?",
+                   session["user_id"], title, author)
+        return redirect("/")
+    else:
+        title = request.args.get("q")
+        author = request.args.get("author")
+        review = db.execute("SELECT review FROM review WHERE title = ? AND user_id = ? AND author = ?", title, session["user_id"], author)
+        return render_template("/delete-review.html", title=title, review=review, author=author, id=session["user_id"])
+    
 # Registration route
 @app.route("/register", methods=["GET", "POST"])
 def register():

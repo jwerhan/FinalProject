@@ -10,7 +10,7 @@
         <b>Search Results</b>
         </div>
         
-        {% for n in range(start|int|default(0), end|int) %}
+        {% for n in range((start|int|default(0))-1, end|int) %}
             {% if n < reviews|length %}
                 <div class="card-body" style="border-bottom: 1px solid #6d6d6d;">
                     <h5 class="card-title mb-0">{{ reviews[n]["title"] }} </h5><h7><i>By {{reviews[n]["author"] }}</i></h7> 
@@ -31,7 +31,7 @@
             <ul class="pagination mt-3 justify-content-center">
                 {% if current_page > 1 %}
                     <li class="page-item">
-                        <a class="page-link" href="?query={{query}}&page={{ current_page - 1 }}">Previous</a>
+                        <a class="page-link" href="?q={{q}}&page={{ current_page - 1 }}">Previous</a>
                     </li>
                 {% else %}
                     <li class="page-item disabled">
@@ -41,17 +41,17 @@
                 {% for p in range(1, total_pages + 1) %}
                     {% if p == current_page %}
                         <li class="page-item active">
-                            <a class="page-link" href="?q={{ query }}&page={{ p }}">{{ p }}</a>
+                            <a class="page-link" href="?q={{ q }}&page={{ p }}">{{ p }}</a>
                         </li>
                     {% else %}
                         <li class="page-item">
-                            <a class="page-link" href="?q={{ query }}&page={{ p }}">{{ p }}</a>
+                            <a class="page-link" href="?q={{ q }}&page={{ p }}">{{ p }}</a>
                         </li>
                     {% endif %}
                 {% endfor %}
                 {% if current_page < total_pages %}
                     <li class="page-item">
-                        <a class="page-link" href="?q={{ query }}&page={{ current_page + 1 }}">Next</a>
+                        <a class="page-link" href="?q={{ q }}&page={{ current_page + 1 }}">Next</a>
                     </li>
                 {% else %}
                     <li class="page-item disabled">

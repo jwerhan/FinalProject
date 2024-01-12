@@ -25,9 +25,9 @@
   </div>
   {% if review[0]["user_id"] == session["user_id"] %}
   <div class="d-flex justify-content-center gap-2">
-    <form action="/delete-review" method="POST" class="mb-3">
+    <form action="/delete-review" method="GET" class="mb-3">
       <input type="hidden" name="q" class="d-none" value="{{ review[0]['title'] }}">
-      <input type="hidden" name="review_user_id" class="d-none" value="{{ review[0]['user'] }}">
+      <input type="hidden" name="author" class="d-none" value="{{ review[0]['author'] }}">
       <button class="btn btn-danger" type="submit" style="margin-top: 0;" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete Review">Delete Review</button>
     </form>
     <form action="/update-review" method="GET">
