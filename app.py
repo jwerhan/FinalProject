@@ -62,7 +62,7 @@ def index():
     
     length = count[0]["COUNT(*)"]
     if length > 4:
-        length = int(length)
+        length = 4
     star = "&#9733; "
     return render_template("index.html", reviews=reviews, length=length, star=star)
     
@@ -89,11 +89,17 @@ def search():
 
         # Retrieve search results with pagination
         rows = searchdb.execute("""SELECT review.title, review.author, review.rating, review.date, review.time, users.username
-                            FROM review 
-                            JOIN users ON users.id = review.user_id
-                            WHERE (TRIM(review.title) LIKE ? OR TRIM(review.author) LIKE ?) 
-                            LIMIT ? OFFSET ?""", 
-                            query, query, results_per_page, offset)
+                                FROM review 
+                                JOIN users ON users.id = review.user_id
+                                WHERE (TRIM(review.title) LIKE ? OR TRIM(review.author) LIKE ?) 
+                                ORDER BY CASE
+                                    WHEN TRIM(review.title) LIKE ? THEN 0
+                                    WHEN TRIM(review.title) LIKE ? || '%' THEN 1
+                                    WHEN TRIM(review.title) LIKE '%' || ? || '%' THEN 2
+                                    ELSE 3
+                                END, review.date DESC, review.time DESC
+                                LIMIT ? OFFSET ?""", 
+                                query, query, query, query, query, results_per_page, offset)
 
         # Count total number of search results
         count = searchdb.execute("""SELECT COUNT(*) FROM review 
