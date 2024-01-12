@@ -1,3 +1,9 @@
+"""
+This file contains the implementation of a Flask web application for a book review website.
+The application allows users to register, login, search for books, add new book reviews, update existing reviews,
+view reviews, and delete reviews. It uses a SQLite database to store user information and book reviews.
+"""
+
 import os
 
 from datetime import datetime
@@ -158,7 +164,6 @@ def addNew():
 
 
 @app.route("/view-review", methods=["GET"])
-@login_required
 def viewReview():
     if request.method != "GET":
         return errorPage("Invalid Method", 405)

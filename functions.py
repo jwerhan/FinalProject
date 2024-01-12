@@ -1,9 +1,10 @@
-import csv
-import datetime
-import pytz
-import requests
-import urllib
-import uuid
+# The following imports are intentionally unused
+# import csv
+# import datetime
+# import pytz
+# import requests
+# import urllib
+# import uuid
 
 from flask import redirect, render_template, session
 from functools import wraps
@@ -12,7 +13,19 @@ def login_required(f):
     """
     Decorate routes to require login.
 
-    https://flask.palletsprojects.com/en/latest/patterns/viewdecorators/
+    This decorator function is used to wrap routes that require the user to be logged in.
+    If the user is not logged in, they will be redirected to the login page.
+
+    Parameters:
+    - f: The function to be decorated
+
+    Returns:
+    - The decorated function
+
+    Example usage:
+    @login_required
+    def my_route():
+        # Code that requires the user to be logged in
     """
 
     @wraps(f)

@@ -1,3 +1,10 @@
+<!-- FILEPATH:/templates/layout.html -->
+<!-- 
+    This is the layout template for the web application. It includes the HTML structure for the header, navigation bar, main content, and footer.
+    The template uses Bootstrap for styling and includes a script for autosizing textareas.
+    It also includes conditional logic to display different navigation options based on whether the user is logged in or not.
+    The template is used to create consistent layout across different pages of the application.
+-->
 <!DOCTYPE html>
 
 <html lang="en">
@@ -75,9 +82,9 @@
             {% block main %}{% endblock %}
         </main>
 
-        <div class="mt-auto" style="background-color: white;">
+        <footer class="mt-auto" style="background-color: white; position: sticky; bottom: 0; width: 100%;">
             <p style="text-align: center">&copy Jonah Werhan 2024</p>
-        </div>
+        </footer>
     </body>
     <script>
 
