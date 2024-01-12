@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    - Edit - {{title}}
+{% endblock %}
+
+{% block main %}
+
+    <h1>Edit Review:</h1>
+    <form action="/update-review" method="POST">
+
+        <input readonly class="form-control mb-2" type="text" name="title" value="{{title}}">
+        <input readonly class="form-control mb-2" type="text" name="author" value="{{author}}">
+        
+        <select name="rating" class="form-control mb-3" id="exampleFormControlSelect1">
+            <option value="1" {% if rating == 1 %}selected{% endif %}>&#9733;</option>
+            <option value="2" {% if rating == 2 %}selected{% endif %}>&#9733; &#9733;</option>
+            <option value="3" {% if rating == 3 %}selected{% endif %}>&#9733; &#9733; &#9733;</option>
+            <option value="4" {% if rating == 4 %}selected{% endif %}>&#9733; &#9733; &#9733; &#9733;</option>
+            <option value="5" {% if rating == 5 %}selected{% endif %}>&#9733; &#9733; &#9733; &#9733; &#9733;</option>
+        </select>  
+
+        <div class="form-group mb-3">
+            <textarea name="review" class="form-control autosize" id="addNewFormText1" style="max-height: 50vh;">{{review}}</textarea>
+        </div>        
+
+        <button class="btn mt-3 btn-primary" type="submit">Update Review</button>
+    </form>
+
+    <script>
+        var reviewTextArea = document.getElementById("addNewFormText1");
+        var maxHeight = "50vh";
+        if (reviewTextArea.scrollHeight > reviewTextArea.offsetHeight) {
+        reviewTextArea.style.height = Math.min(reviewTextArea.scrollHeight, parseInt(maxHeight)) + "px";
+        } else {
+        reviewTextArea.style.height = maxHeight;
+        }
+        autosize(reviewTextArea);
+    </script>
+
+{% endblock %}

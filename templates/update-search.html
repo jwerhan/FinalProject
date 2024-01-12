@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Update Review
+{% endblock %}
+
+{% block main %}
+<div class="container h-100 d-flex justify-content-center align-items-center">
+    <div class="row">
+        <div class="col-16 mx-auto">
+            <form class="form-inline" action="/update-review" method="GET">
+                <input class="form-control mr-sm-2" type="text" name="q" value="" placeholder="Title">
+                <button class="btn mt-1 btn-primary" type="submit">Search Review</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

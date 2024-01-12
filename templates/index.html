@@ -15,11 +15,18 @@
         {% for n in range(length) %}
             <div class="card-body" style="border-bottom: 1px solid #6d6d6d;">
                 <h5 class="card-title">{{ reviews[n]["title"] }}</h5> 
-                <p class="card-text">By {{ reviews[n]["author"] }}<br> Rating: {{ (star * (reviews[n]["star_rating"] | int)) | safe }}</p>
-                <form action="/view-review" method="POST">
-                    <input type="hidden" name="review_title" class="d-none" value="{{ reviews[n]['title'] }}">
-                    <button class="btn btn-primary" type="submit" style="margin-top: 0;">View Review</button>
-                </form>                
+                <p class="card-text">By {{ reviews[n]["author"] }}<br> Rating: {{ (star * (reviews[n]["rating"] | int)) | safe }}</p>
+                <div class="d-flex justify-content-center gap-2">
+                    <form action="/view-review" method="GET">
+                        <input type="hidden" name="review_title" class="d-none" value="{{ reviews[n]['title'] }}">
+                        <input type="hidden" name="review_author" class="d-none" value="{{ reviews[n]['username'] }}">
+                        <button class="btn btn-light" type="submit" style="margin-top: 0;">View Review</button>
+                    </form>                
+                    <form action="/update-review" method="GET" class="ml-2">
+                        <input type="hidden" name="q" class="d-none" value="{{ reviews[n]['title'] }}">
+                        <button class="btn btn-light" type="submit" style="margin-top: 0;">Update Review</button>
+                    </form>
+                </div>
             </div>
         {% endfor %}
 
