@@ -22,7 +22,7 @@ app = Flask(__name__)
 # Configure session to use cookies
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
-app.config["SESSION_COOKIE_SECURE"] = True  # Enable secure cookies
+app.config["SESSION_COOKIE_SECURE"] = False  # Not secure cookies for production only #FIXME:
 app.config["SESSION_COOKIE_HTTPONLY"] = True  # Enable HttpOnly cookies
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"  # Set SameSite attribute to Lax
 # Set secret key
@@ -43,11 +43,10 @@ def after_request(response):
 
 # Logged in home page
 @app.route("/", methods=["GET"])
-@login_required
 def index():
     """Logged in home page displays most recent additions to database for use (max of 4)"""
 
-    if not session["user_id"]:
+    if not session.get("user_id"):
         return redirect("/login")
 
     reviews = db.execute("""SELECT review.*, users.username FROM review 
@@ -356,3 +355,6 @@ def register():
     # Flash success message and redirect user to login page
     flash("Registration successful! Please log in.")
     return redirect("/login")
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=5678, debug=True)
