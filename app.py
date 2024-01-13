@@ -166,61 +166,7 @@ def addNew():
         return redirect("/")
     else:
         return render_template("add-new.html", preserve_newlines=True)
-    
-@app.route("/view-all", methods=["GET"])
-def viewAll():
-    # view all reviews in database (max of 10) ordered by date and time most recent
-    if request.method != "GET":
-        return errorPage("Invalid Method", 405)
-    reviews = db.execute("""SELECT review.*, users.username FROM review
-                            JOIN users ON users.id = review.user_id
-                            ORDER BY review.date DESC, review.time DESC""")
-    count = db.execute("SELECT COUNT(*) FROM review")
-    length = count[0]["COUNT(*)"]
-    if length > 10:
-        length = 10
-    star = "&#9733; "
-    return render_template("view-all.html", reviews=reviews, length=length, star=star)
-    """Add new entry to database"""
-    if request.method == "POST":
-        # Do things with the submitted data
-        bookTitle = request.form.get("title")
-        bookAuthor = request.form.get("author")
-        bookRating = int(request.form.get("rating"))
-        bookReview = request.form.get("review")
-        if not bookTitle or not bookAuthor or not bookRating or not bookReview:
-            return errorPage("Ensure all fields have valid information.")
 
-        # Preserve newlines in the review
-        bookReview = bookReview.replace('\r\n', '<br>').replace('\n', '<br>')
-
-        # Check if this user already has a review for this book
-        count = db.execute("SELECT COUNT(*) FROM review WHERE user_id = ? AND title = ? AND author = ?",
-                           session["user_id"], bookTitle, bookAuthor)
-        count = count[0]["COUNT(*)"] if count else 0
-        if count != 0:
-            return errorPage("""You have already reviewed this book, 
-                             if you would like to update this review go to the update page""")
-
-        # Get the current date and time
-        currentDatetime = datetime.now()
-        currentDate = currentDatetime.strftime("%Y-%m-%d")
-        currentTime = currentDatetime.strftime("%H:%M:%S")
-
-        db.execute("""INSERT INTO review (
-                   user_id,
-                   title,
-                   author,
-                   rating,
-                   review,
-                   date,
-                   time
-        ) VALUES (?)""", (session["user_id"], bookTitle, bookAuthor, bookRating, 
-                          bookReview, currentDate, currentTime))
-
-        return redirect("/")
-    else:
-        return render_template("add-new.html", preserve_newlines=True)
 
 @app.route("/view-review", methods=["GET"])
 def viewReview():
