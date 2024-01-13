@@ -282,7 +282,7 @@ def login():
         return render_template("/login.html")
 
     # Add a return statement here to return a valid response
-    return redirect("/")  # Replace "/" with the desired redirect URL
+    return redirect("/") 
 
 @app.route("/delete-review", methods=["POST", "GET"])
 @login_required
