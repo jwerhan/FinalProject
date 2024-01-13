@@ -21,8 +21,7 @@
                 <p>Rating: {{ (star * (review["rating"] | int)) | safe }}</p>
                 <div class="d-flex justify-content-center gap-2">
                     <form action="/view-review" method="GET">
-                        <input type="hidden" name="review_title" class="d-none" value="{{ review['title'] }}">
-                        <input type="hidden" name="review_user_id" class="d-none" value="{{ review['user_id'] }}">
+                        <input type="hidden" name="id" class="d-none" value="{{ review['review_id'] }}">
                         <button class="btn btn-light" type="submit" style="margin-top: 0;">View Review</button>
                     </form>                
                 </div>

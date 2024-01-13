@@ -2,8 +2,8 @@
 
 <!-- This template is used to display a single review. It extends the "layout.html" template. -->
 
-{% extends "layout.html" %} {% block title %} Review - {{title}} {% endblock %}
-{% block main %}
+{% extends "layout.html" %} {% block title %} Review - {{review[0]['title']}} {%
+endblock %} {% block main %}
 
 <!-- The main content of the review is displayed within a card. -->
 <div class="card">
@@ -106,4 +106,47 @@
   {% endif %}
 </div>
 
-{% endblock %}
+<!-- Add comments form -->
+<form action="/add-comment" method="POST">
+  <div class="input-group mb-3 mt-3">
+    <input
+      type="text"
+      class="form-control"
+      placeholder="Add a comment"
+      aria-label="Add a comment"
+      aria-describedby="button-addon2"
+      name="comment"
+      id="comment"
+      autocomplete="off"
+      required
+    />
+    <input
+      type="hidden"
+      name="review_id"
+      class="d-none"
+      value="{{ review[0]['review_id'] }}"
+    />
+    <button class="btn btn-outline-secondary" type="submit" id="button-addon2">
+      Add
+    </button>
+  </div>
+</form>
+
+<!-- Display comments -->
+{% if comments|length > 0 %}
+<div class="card text-left" style="text-align: left">
+  <!-- Add the text-left class here -->
+  <div class="card-header">Comments</div>
+  {% for comment in comments %}
+  <div class="card-body" style="border-bottom: 1px solid #6d6d6d">
+    <blockquote class="blockquote mb-0">
+      <p>{{comment.comment}}</p>
+      <footer class="blockquote-footer">
+        {{comment.username}} commented on
+        <span class="comment-date">{{comment.date}} at {{comment.time}}</span>
+      </footer>
+    </blockquote>
+  </div>
+  {% endfor %}
+</div>
+{% endif %} {% endblock %}

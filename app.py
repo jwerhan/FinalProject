@@ -87,7 +87,7 @@ def search():
         star = "&#9733; "
 
         # Retrieve search results with pagination
-        rows = searchdb.execute("""SELECT review.title, review.author, review.rating, review.date, review.time, users.username
+        rows = searchdb.execute("""SELECT review.title, review.review_id, review.author, review.rating, review.date, review.time, users.username
                                 FROM review 
                                 JOIN users ON users.id = review.user_id
                                 WHERE (TRIM(review.title) LIKE ? OR TRIM(review.author) LIKE ?) 
@@ -172,11 +172,45 @@ def addNew():
 def viewReview():
     if request.method != "GET":
         return errorPage("Invalid Method", 405)
-    title = request.args.get("review_title")
-    reviewAuthor = request.args.get("review_author")
-    review = db.execute("SELECT * FROM review JOIN users ON review.user_id = users.id WHERE title = ?", title)
+    reviewID = request.args.get("id")
+    if not reviewID:
+        return errorPage("Invalid request", 400)
+    row = db.execute("""SELECT review.*, users.username FROM review 
+                     JOIN users ON users.id = review.user_id
+                     WHERE review.review_id = ?""", reviewID)
     star = "&#9733; "
-    return render_template("/view-review.html", title=title, review=review, star=star, reviewAuthor=reviewAuthor)
+
+    # Get comments for this review
+    comments = db.execute("""SELECT comments.*, users.username FROM comments
+                          JOIN users ON users.id = comments.user_id
+                          WHERE comments.review_id = ?""", reviewID)
+    commentCount = len(comments)
+
+
+    return render_template("/view-review.html", review=row, star=star, comments=comments, commentCount=commentCount)
+
+@app.route("/add-comment", methods=["POST"])
+@login_required
+def addComment():
+    if request.method != "POST":
+        return errorPage("Invalid Method", 405)
+    comment = request.form.get("comment")
+    reviewID = request.form.get("review_id")
+    if not comment or not reviewID:
+        return errorPage("Invalid request", 400)
+    date = datetime.now().strftime("%Y-%m-%d")
+    time = datetime.now().strftime("%H:%M:%S")
+
+    db.execute("""INSERT INTO comments (
+                user_id,
+                review_id,
+                comment,
+                date,
+                time
+     ) VALUES (?)""", (session["user_id"], reviewID, comment, date, time))
+
+    return redirect(url_for("viewReview", id=reviewID))
+
 
 @app.route("/update-review", methods=["POST", "GET"])
 @login_required
