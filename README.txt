@@ -4,6 +4,8 @@ add a view all functionality
 add the ability to search for reviews by other people of specific books
 add the ability to filter
 
+## Remove ability to submit title/author in update form
+
 User Profile: Allow users to have a profile page where they can see their own reviews and maybe edit their personal information.
 
 Book Details Page: Create a detailed page for each book with information like author, publication year, genre, etc. You could use an API like Google Books or Open Library to fetch this data.

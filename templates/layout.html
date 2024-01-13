@@ -1,104 +1,189 @@
 <!-- FILEPATH:/templates/layout.html -->
 <!-- 
-    This is the layout template for the web application. It includes the HTML structure for the header, navigation bar, main content, and footer.
-    The template uses Bootstrap for styling and includes a script for autosizing textareas.
-    It also includes conditional logic to display different navigation options based on whether the user is logged in or not.
-    The template is used to create consistent layout across different pages of the application.
+This is the layout template for the web application. It includes the HTML structure for the header, navigation bar, main content, and footer.
+The template uses Bootstrap for styling and includes a script for autosizing textareas.
+It also includes conditional logic to display different navigation options based on whether the user is logged in or not.
+The template is used to create consistent layout across different pages of the application.
 -->
 <!DOCTYPE html>
 
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
 
-    <head>
+    <!-- https://getbootstrap.com/docs/5.3/ -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <link href="/static/styles.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/autosize.js/4.0.2/autosize.min.js"></script>
 
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Books {% block title %}{% endblock %}</title>
+  </head>
 
-        <!-- https://getbootstrap.com/docs/5.3/ -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-        <link href="/static/styles.css" rel="stylesheet">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/autosize.js/4.0.2/autosize.min.js"></script>
-
-
-        <title>Books {% block title %}{% endblock %}</title>
-
-    </head>
-
-    <body>
-
-        <nav class="bg-light border navbar navbar-expand-md navbar-light">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="/">Books</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbar">
-                    {% if session["user_id"] %}
-                        <ul class="navbar-nav me-auto mt-2">
-                            <li class="nav-item"><a class="nav-link" href="/">....</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/">....</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/">....</a></li>
-                            <li class="nav-item"><a class="nav-link" href="">....</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/add-new">Add Review</a></li>
-                        </ul>
-                        <ul class="navbar-nav ms-auto mt-2">
-                            <li class="nav-item">
-                                <form class="form-inline" action="/search" method="GET">
-                                    <div class="input-group mr-3">
-                                        <input class="form-control mr-2" autocomplete="off" type="text" name="q" value="" placeholder="Search for Title or Author" style="width: 300px; margin-right: 10px;">
-                                        <div class="input-group-append">
-                                            <button class="btn btn-secondary" type="submit">Search</button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </li>
-                            <li class="nav-item"><a class="nav-link" href="/logout">Log Out</a></li>
-                        </ul>
-                    {% else %}
-                        <ul class="navbar-nav ms-auto mt-2">
-                            <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/login">Log In</a></li>
-                        </ul>
-                    {% endif %}
+  <body>
+    <nav class="bg-light border navbar navbar-expand-md navbar-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">Books</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbar"
+          aria-controls="navbar"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbar">
+          {% if session["user_id"] %}
+          <ul class="navbar-nav me-auto mt-2">
+            <li class="nav-item"><a class="nav-link" href="/">....</a></li>
+            <li class="nav-item"><a class="nav-link" href="/">....</a></li>
+            <li class="nav-item"><a class="nav-link" href="/">....</a></li>
+            <li class="nav-item"><a class="nav-link" href="">....</a></li>
+            <li class="nav-item">
+              <a class="nav-link" href="/add-new">Add Review</a>
+            </li>
+          </ul>
+          <ul class="navbar-nav ms-auto mt-2">
+            <li class="nav-item">
+              <form class="form-inline" action="/search" method="GET">
+                <div class="input-group mr-3">
+                  <input
+                    class="form-control mr-2"
+                    autocomplete="off"
+                    type="text"
+                    name="q"
+                    value=""
+                    placeholder="Search for Title or Author"
+                    style="width: 300px; margin-right: 10px"
+                  />
+                  <div class="input-group-append">
+                    <button class="btn btn-secondary" type="submit">
+                      Search
+                    </button>
+                  </div>
                 </div>
-            </div>
-        </nav>
+              </form>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/logout">Log Out</a>
+            </li>
+          </ul>
+          {% else %}
+          <ul class="navbar-nav ms-auto mt-2">
+            <li class="nav-item">
+              <a class="nav-link" href="/register">Register</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/login">Log In</a>
+            </li>
+          </ul>
+          {% endif %}
+        </div>
+      </div>
+    </nav>
 
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <header>
-                    <div class="alert alert-primary mb-0 text-center" role="alert">
-                        {% for message in messages %}
-                            {{ message }}
-                            <br>
-                        {% endfor %}
-                    </div>
-                </header>
-            {% endif %}
-        {% endwith %}
+    {% with messages = get_flashed_messages() %} {% if messages %}
+    <header>
+      <div class="alert alert-primary mb-0 text-center" role="alert">
+        {% for message in messages %} {{ message }}
+        <br />
+        {% endfor %}
+      </div>
+    </header>
+    {% endif %} {% endwith %}
 
-            
-        <main class="container py-5 text-center">
-            {% block main %}{% endblock %}
-        </main>
+    <main class="container py-5 text-center">
+      {% block main %}{% endblock %}
+    </main>
 
-        <footer class="mt-auto" style="background-color: white; position: sticky; bottom: 0; width: 100%;">
-            <p style="text-align: center">&copy Jonah Werhan 2024</p>
-        </footer>
-        <script>
-    
-            document.addEventListener('DOMContentLoaded', function() {
-                // Adapted from https://stackoverflow.com/a/10162353
-                const html =
-                    '<!DOCTYPE ' +
-                    document.doctype.name +
-                    (document.doctype.publicId ? ' PUBLIC "' + document.doctype.publicId + '"' : '') +
-                    (!document.doctype.publicId && document.doctype.systemId ? ' SYSTEM' : '') +
-                    (document.doctype.systemId ? ' "' + document.doctype.systemId + '"' : '') +
-                    '>\n' + document.documentElement.outerHTML;
+    <footer
+      class="mt-auto"
+      style="background-color: white; position: sticky; bottom: 0; width: 100%"
+    >
+      <p style="text-align: center">&copy Ur Mom 2024</p>
+    </footer>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Adapted from https://stackoverflow.com/a/10162353
+        const html =
+          "<!DOCTYPE " +
+          document.doctype.name +
+          (document.doctype.publicId
+            ? ' PUBLIC "' + document.doctype.publicId + '"'
+            : "") +
+          (!document.doctype.publicId && document.doctype.systemId
+            ? " SYSTEM"
+            : "") +
+          (document.doctype.systemId
+            ? ' "' + document.doctype.systemId + '"'
+            : "") +
+          ">\n" +
+          document.documentElement.outerHTML;
+      });
+    </script>
+    <!-- Bootstrap 5 JS -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      // Resize the review textarea to fit the content.
+      var reviewTextArea = document.getElementById("review-text-area");
+      var maxHeight = "50vh";
+      if (reviewTextArea.scrollHeight > reviewTextArea.offsetHeight) {
+        reviewTextArea.style.height =
+          Math.min(reviewTextArea.scrollHeight, parseInt(maxHeight)) + "px";
+      } else {
+        reviewTextArea.style.height = maxHeight;
+      }
+      autosize(reviewTextArea);
+
+      // Enable Bootstrap tooltips
+      var tooltipTriggerList = [].slice.call(
+        document.querySelectorAll('[data-bs-toggle="tooltip"]')
+      );
+      var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+      });
+
+      // Function to copy the review link to the clipboard.
+      function copyLink() {
+        console.log("copying link");
+        var link = window.location.href;
+        if (navigator.clipboard) {
+          navigator.clipboard
+            .writeText(link)
+            .then(function () {
+              console.log("Text copied to clipboard");
+              alert("Text copied to clipboard successfully!");
+            })
+            .catch(function (err) {
+              console.error("Failed to copy text: ", err);
             });
-    
-        </script>
-        <!-- Bootstrap 5 JS -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+        } else {
+          // Fallback for browsers that do not support the Clipboard API
+          var textarea = document.createElement("textarea");
+          textarea.value = link;
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand("copy");
+          document.body.removeChild(textarea);
+          console.log("Text copied to clipboard");
+          alert("Text copied to clipboard successfully!");
+        }
+      }
+    </script>
+  </body>
 </html>

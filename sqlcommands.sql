@@ -6,11 +6,12 @@ CREATE TABLE users (
     hash TEXT NOT NULL
 );
 
-CREATE TABLE review (
+CREATE TABLE sqlite_sequence(name,seq);
+CREATE TABLE IF NOT EXISTS "review" (
     user_id INTEGER NOT NULL,
     title TEXT NOT NULL,
     author TEXT NOT NULL,
-    star_rating INTEGER,
+    rating INTEGER,  -- changed column name here
     review TEXT NOT NULL,
     date TEXT NOT NULL,
     time TEXT NOT NULL,

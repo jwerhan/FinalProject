@@ -2,21 +2,16 @@
 
 <!-- This template is used to display a single review. It extends the "layout.html" template. -->
 
-{% extends "layout.html" %}
-
-{% block title %}
-  Review - {{title}}
-{% endblock %}
-
+{% extends "layout.html" %} {% block title %} Review - {{title}} {% endblock %}
 {% block main %}
 
 <!-- The main content of the review is displayed within a card. -->
 <div class="card">
   <div class="card-header">
     <!-- Display the title and author of the review. -->
-    <b>"{{ review[0]['title'] }}"</b> by {{ review[0]['author'] }}<br>
+    <b>"{{ review[0]['title'] }}"</b> by {{ review[0]['author'] }}<br />
     <!-- Display the rating of the review using stars. -->
-    {{ (star * review[0]['rating'] | int) | safe }}<br>
+    {{ (star * review[0]['rating'] | int) | safe }}<br />
     <!-- Display the date and time the review was posted. -->
     Posted on {{ review[0]['date'] }} at {{ review[0]['time'] }}
   </div>
@@ -24,11 +19,19 @@
     <blockquote class="blockquote mb-0">
       <div class="review-container">
         <!-- Display the review text within a textarea. -->
-        <textarea style="max-height: 50vh" id="review-text-area" readonly 
-        class="form-control small border-0 mb-1">{{ review[0]['review'] }}</textarea>
+        <textarea
+          style="max-height: 50vh"
+          id="review-text-area"
+          readonly
+          class="form-control small border-0 mb-1"
+        >
+{{ review[0]['review'] }}</textarea
+        >
         <footer class="blockquote-footer mt-2">
           <!-- Display the username of the reviewer. -->
-          <cite title="Source Title">Review by {{ review[0]['username'] }}</cite>
+          <cite title="Source Title"
+            >Review by {{ review[0]['username'] }}</cite
+          >
         </footer>
       </div>
     </blockquote>
@@ -37,48 +40,70 @@
   <div class="d-flex justify-content-center gap-2">
     <!-- Form to delete the review. -->
     <form action="/delete-review" method="GET" class="mb-3">
-      <input type="hidden" name="q" class="d-none" value="{{ review[0]['title'] }}">
-      <input type="hidden" name="author" class="d-none" value="{{ review[0]['author'] }}">
-      <button class="btn btn-danger" type="submit" style="margin-top: 0;" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete Review">Delete Review</button>
+      <input
+        type="hidden"
+        name="q"
+        class="d-none"
+        value="{{ review[0]['title'] }}"
+      />
+      <input
+        type="hidden"
+        name="author"
+        class="d-none"
+        value="{{ review[0]['author'] }}"
+      />
+      <button
+        class="btn btn-danger"
+        type="submit"
+        style="margin-top: 0"
+        data-bs-toggle="tooltip"
+        data-bs-placement="top"
+        title="Delete Review"
+      >
+        Delete Review
+      </button>
     </form>
     <!-- Form to update the review. -->
     <form action="/update-review" method="GET">
-      <input type="hidden" name="q" class="d-none" value="{{ review[0]['title'] }}">
-      <input type="hidden" name="review_user_id" class="d-none" value="{{ review[0]['username'] }}">
-      <button class="btn btn-light" type="submit" style="margin-top: 0;" data-bs-toggle="tooltip" data-bs-placement="top" title="Update Review">Update Review</button>
+      <input
+        type="hidden"
+        name="q"
+        class="d-none"
+        value="{{ review[0]['title'] }}"
+      />
+      <input
+        type="hidden"
+        name="review_user_id"
+        class="d-none"
+        value="{{ review[0]['username'] }}"
+      />
+      <button
+        class="btn btn-light"
+        type="submit"
+        style="margin-top: 0"
+        data-bs-toggle="tooltip"
+        data-bs-placement="top"
+        title="Update Review"
+      >
+        Update Review
+      </button>
     </form>
     <!-- Button to share the review. -->
     <form class="mb-3">
-      <button class="btn btn-light" type="button" style="margin-top: 0;" data-bs-toggle="tooltip" data-bs-placement="top" title="Share Review" onclick="copyLink()">Share Review</button>
+      <button
+        class="btn btn-light"
+        type="button"
+        style="margin-top: 0"
+        data-bs-toggle="tooltip"
+        data-bs-placement="top"
+        title="Share Review"
+        onclick="copyLink()"
+      >
+        Share Review
+      </button>
     </form>
   </div>
   {% endif %}
 </div>
-
-<script>
-  // Resize the review textarea to fit the content.
-  var reviewTextArea = document.getElementById("review-text-area");
-  var maxHeight = "50vh";
-  if (reviewTextArea.scrollHeight > reviewTextArea.offsetHeight) {
-    reviewTextArea.style.height = Math.min(reviewTextArea.scrollHeight, parseInt(maxHeight)) + "px";
-  } else {
-    reviewTextArea.style.height = maxHeight;
-  }
-  autosize(reviewTextArea);
-
-  // Enable Bootstrap tooltips
-  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-    return new bootstrap.Tooltip(tooltipTriggerEl)
-  })
-
-  // Function to copy the review link to the clipboard.
-  function copyLink() {
-    var link = window.location.href;
-    navigator.clipboard.writeText(link);
-    alert("Review link copied to clipboard!");
-  }
-</script>
-
 
 {% endblock %}
