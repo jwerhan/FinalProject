@@ -1,0 +1,8 @@
+<!-- template to view all reviews in database regardless of logged status -->
+{% extends "layout.html" %} {% block title %} Reviews {% endblock %} {% block
+main %}
+<h1>Reviews</h1>
+<ul>
+  {% for review in range(length) %} {% endfor %}
+</ul>
+{% endblock %}
