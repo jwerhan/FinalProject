@@ -36,6 +36,20 @@ def login_required(f):
 
     return decorated_function
 
+def setOriginalAuthorTitle(author, title):
+    """Set the original author and title of a book"""
+    session["originalAuthor"] = author
+    session["originalTitle"] = title
+
+def getOriginalAuthorTitle():
+    """Get the original author and title of a book"""
+    return session["originalAuthor"], session["originalTitle"]
+
+def clearOriginalAuthorTitle():
+    """Clear the original author and title of a book"""
+    session.pop("originalAuthor", None)
+    session.pop("originalTitle", None)
+
 # error page
 def errorPage(message, code=400):
     """Render message so as to inform user of an error"""

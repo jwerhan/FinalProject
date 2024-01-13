@@ -1,10 +1,8 @@
 TODO:
-Add a search functionality
-add a view all functionality
-add the ability to search for reviews by other people of specific books
-add the ability to filter
 
-## Remove ability to submit title/author in update form
+add a view all functionality
+
+add the ability to filter
 
 User Profile: Allow users to have a profile page where they can see their own reviews and maybe edit their personal information.
 

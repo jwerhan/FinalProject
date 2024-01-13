@@ -11,7 +11,7 @@ from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
-from functions import login_required, errorPage
+from functions import login_required, errorPage, getOriginalAuthorTitle, setOriginalAuthorTitle, clearOriginalAuthorTitle
 from math import ceil
 from flask import url_for
 
@@ -181,11 +181,22 @@ def viewReview():
 @app.route("/update-review", methods=["POST", "GET"])
 @login_required
 def updateReview():
-    if request.method == "POST":
+    """Update an existing review"""
+    if request.method == "POST":     
+
+        # Get title and author from the form data
         title = request.form.get('title')
         author = request.form.get('author')
         rating = request.form.get('rating')
         review = request.form.get('review')  
+
+        # Check orignal author and title 
+        originalTitle = getOriginalAuthorTitle()[1]
+        originalAuthor = getOriginalAuthorTitle()[0]
+
+        # Compare submitted title and author to ensure the user hasn't tampered with the form data
+        if title != originalTitle or author != originalAuthor:
+            return errorPage("Invalid request", 400)
               
         count = db.execute("""SELECT COUNT(*) FROM review 
                            WHERE user_id = ? AND title = ? AND author = ?""",
@@ -213,6 +224,9 @@ def updateReview():
         count = len(row)
         if count > 1:
             return errorPage("Multiple reviews found, please be more specific", 400)
+        
+        # Set the original author and title of the book so as to ensure the user hasn't tampered with the form data
+        setOriginalAuthorTitle(row[0]["author"], row[0]["title"])
         
         title = row[0]["title"]
         author = row[0]["author"]
