@@ -26,8 +26,8 @@ app.config["SESSION_COOKIE_SECURE"] = False  # Not secure cookies for production
 app.config["SESSION_COOKIE_HTTPONLY"] = True  # Enable HttpOnly cookies
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"  # Set SameSite attribute to Lax
 # Set secret key
-secretKey = 'supersecretkey'
-app.secret_key = secretKey
+# secretKey = 'supersecretkey'
+# app.secret_key = secretKey
 Session(app)
 
 
