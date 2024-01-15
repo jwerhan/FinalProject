@@ -1,10 +1,10 @@
 # The following imports are intentionally unused
-# import csv
-# import datetime
-# import pytz
-# import requests
-# import urllib
-# import uuid
+import csv
+import datetime
+import pytz
+import requests
+import urllib
+import uuid
 
 from flask import redirect, render_template, session
 from functools import wraps
