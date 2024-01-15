@@ -19,14 +19,15 @@ from flask import url_for
 # Configure application
 app = Flask(__name__)
 
-# Configure session to use cookies
-app.config["SESSION_PERMANENT"] = False
+# Configure session to use filesystem (instead of signed cookies)
 app.config["SESSION_TYPE"] = "filesystem"
+app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_COOKIE_SECURE"] = False  # Not secure cookies for production only #FIXME:
 app.config["SESSION_COOKIE_HTTPONLY"] = True  # Enable HttpOnly cookies
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"  # Set SameSite attribute to Lax
 # Set secret key
-app.secret_key = os.urandom(24)
+secretKey = 'supersecretkey'
+app.secret_key = secretKey
 Session(app)
 
 
