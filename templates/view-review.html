@@ -7,146 +7,141 @@ endblock %} {% block main %}
 
 <!-- The main content of the review is displayed within a card. -->
 <div class="card">
-  <div class="card-header">
-    <!-- Display the title and author of the review. -->
-    <b>"{{ review[0]['title'] }}"</b> by {{ review[0]['author'] }}<br />
-    <!-- Display the rating of the review using stars. -->
-    {{ (star * review[0]['rating'] | int) | safe }}<br />
-    <!-- Display the date and time the review was posted. -->
-    Posted on {{ review[0]['date'] }} at {{ review[0]['time'] }}
-  </div>
-  <div class="card-body">
-    <blockquote class="blockquote mb-0">
-      <div class="review-container">
-        <!-- Display the review text within a textarea. -->
-        <textarea
-          style="max-height: 50vh"
-          id="review-text-area"
-          readonly
-          class="form-control small border-0 mb-1"
-        >
+	<div class="card-header">
+		<!-- Display the title and author of the review. -->
+		<b>"{{ review[0]['title'] }}"</b> by {{ review[0]['author'] }}<br />
+		<!-- Display the rating of the review using stars. -->
+		{{ (star * review[0]['rating'] | int) | safe }}<br />
+		<!-- Display the date and time the review was posted. -->
+		Posted on {{ review[0]['date'] }} at {{ review[0]['time'] }}
+	</div>
+	<div class="card-body">
+		<blockquote class="blockquote mb-0">
+			<div class="review-container">
+				<!-- Display the review text within a textarea. -->
+				<textarea
+					style="max-height: 50vh"
+					id="review-text-area"
+					readonly
+					class="form-control small border-0 mb-1">
 {{ review[0]['review'] }}</textarea
-        >
-        <footer class="blockquote-footer mt-2">
-          <!-- Display the username of the reviewer. -->
-          <cite title="Source Title"
-            >Review by {{ review[0]['username'] }}</cite
-          >
-        </footer>
-      </div>
-    </blockquote>
-  </div>
-  {% if review[0]["user_id"] == session["user_id"] %}
-  <div class="d-flex justify-content-center gap-2">
-    <!-- Form to delete the review. -->
-    <form action="/delete-review" method="GET" class="mb-3">
-      <input
-        type="hidden"
-        name="q"
-        class="d-none"
-        value="{{ review[0]['title'] }}"
-      />
-      <input
-        type="hidden"
-        name="author"
-        class="d-none"
-        value="{{ review[0]['author'] }}"
-      />
-      <button
-        class="btn btn-danger"
-        type="submit"
-        style="margin-top: 0"
-        data-bs-toggle="tooltip"
-        data-bs-placement="top"
-        title="Delete Review"
-      >
-        Delete Review
-      </button>
-    </form>
-    <!-- Form to update the review. -->
-    <form action="/update-review" method="GET">
-      <input
-        type="hidden"
-        name="q"
-        class="d-none"
-        value="{{ review[0]['title'] }}"
-      />
-      <input
-        type="hidden"
-        name="review_user_id"
-        class="d-none"
-        value="{{ review[0]['username'] }}"
-      />
-      <button
-        class="btn btn-light"
-        type="submit"
-        style="margin-top: 0"
-        data-bs-toggle="tooltip"
-        data-bs-placement="top"
-        title="Update Review"
-      >
-        Update Review
-      </button>
-    </form>
-    <!-- Button to share the review. -->
-    <form class="mb-3">
-      <button
-        class="btn btn-light"
-        type="button"
-        style="margin-top: 0"
-        data-bs-toggle="tooltip"
-        data-bs-placement="top"
-        title="Share Review"
-        onclick="copyLink()"
-      >
-        Share Review
-      </button>
-    </form>
-  </div>
-  {% endif %}
+				>
+				<footer class="blockquote-footer mt-2">
+					<!-- Display the username of the reviewer. -->
+					<cite title="Source Title"
+						>Review by {{ review[0]['username'] }}</cite
+					>
+				</footer>
+			</div>
+		</blockquote>
+	</div>
+	{% if review[0]["user_id"] == session["user_id"] %}
+	<div class="d-flex justify-content-center gap-2">
+		<!-- Form to delete the review. -->
+		<form action="/delete-review" method="GET" class="mb-3">
+			<input
+				type="hidden"
+				name="q"
+				class="d-none"
+				value="{{ review[0]['title'] }}" />
+			<input
+				type="hidden"
+				name="author"
+				class="d-none"
+				value="{{ review[0]['author'] }}" />
+			<button
+				class="btn btn-danger"
+				type="submit"
+				style="margin-top: 0"
+				data-bs-toggle="tooltip"
+				data-bs-placement="top"
+				title="Delete Review">
+				Delete Review
+			</button>
+		</form>
+		<!-- Form to update the review. -->
+		<form action="/update-review" method="GET">
+			<input
+				type="hidden"
+				name="q"
+				class="d-none"
+				value="{{ review[0]['title'] }}" />
+			<input
+				type="hidden"
+				name="review_user_id"
+				class="d-none"
+				value="{{ review[0]['username'] }}" />
+			<button
+				class="btn btn-light"
+				type="submit"
+				style="margin-top: 0"
+				data-bs-toggle="tooltip"
+				data-bs-placement="top"
+				title="Update Review">
+				Update Review
+			</button>
+		</form>
+		<!-- Button to share the review. -->
+		<form class="mb-3">
+			<button
+				class="btn btn-light"
+				type="button"
+				style="margin-top: 0"
+				data-bs-toggle="tooltip"
+				data-bs-placement="top"
+				title="Share Review"
+				onclick="copyLink()">
+				Share Review
+			</button>
+		</form>
+	</div>
+	{% endif %}
 </div>
 
 <!-- Add comments form -->
 <form action="/add-comment" method="POST">
-  <div class="input-group mb-3 mt-3">
-    <input
-      type="text"
-      class="form-control"
-      placeholder="Add a comment"
-      aria-label="Add a comment"
-      aria-describedby="button-addon2"
-      name="comment"
-      id="comment"
-      autocomplete="off"
-      required
-    />
-    <input
-      type="hidden"
-      name="review_id"
-      class="d-none"
-      value="{{ review[0]['review_id'] }}"
-    />
-    <button class="btn btn-outline-secondary" type="submit" id="button-addon2">
-      Add
-    </button>
-  </div>
+	<div class="input-group mb-3 mt-3">
+		<input
+			type="text"
+			class="form-control"
+			placeholder="Add a comment"
+			aria-label="Add a comment"
+			aria-describedby="button-addon2"
+			name="comment"
+			id="comment"
+			autocomplete="off"
+			required />
+		<input
+			type="hidden"
+			name="review_id"
+			class="d-none"
+			value="{{ review[0]['review_id'] }}" />
+		<button
+			class="btn btn-outline-secondary"
+			type="submit"
+			id="button-addon2">
+			Post
+		</button>
+	</div>
 </form>
 
 <!-- Display comments -->
 {% if comments|length > 0 %}
 <div class="card text-left" style="text-align: left">
-  <!-- Add the text-left class here -->
-  <div class="card-header">Comments</div>
-  {% for comment in comments %}
-  <div class="card-body" style="border-bottom: 1px solid #6d6d6d">
-    <blockquote class="blockquote mb-0">
-      <p>{{comment.comment}}</p>
-      <footer class="blockquote-footer">
-        {{comment.username}} commented on
-        <span class="comment-date">{{comment.date}} at {{comment.time}}</span>
-      </footer>
-    </blockquote>
-  </div>
-  {% endfor %}
+	<!-- Add the text-left class here -->
+	<div class="card-header">Comments</div>
+	{% for comment in comments %}
+	<div class="card-body" style="border-bottom: 1px solid #6d6d6d">
+		<blockquote class="blockquote mb-0">
+			<p>{{comment.comment}}</p>
+			<footer class="blockquote-footer">
+				{{comment.username}} commented on
+				<span class="comment-date"
+					>{{comment.date}} at {{comment.time}}</span
+				>
+			</footer>
+		</blockquote>
+	</div>
+	{% endfor %}
 </div>
 {% endif %} {% endblock %}
