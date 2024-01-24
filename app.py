@@ -62,7 +62,7 @@ def index():
     
     length = count[0]["COUNT(*)"]
     if length > 4:
-        length = 4
+        length = 5
     star = "&#9733; "
     return render_template("index.html", reviews=reviews, length=length, star=star)
     
@@ -135,6 +135,7 @@ def addNew():
         bookAuthor = request.form.get("author")
         bookRating = int(request.form.get("rating"))
         bookReview = request.form.get("review")
+
         if not bookTitle or not bookAuthor or not bookRating or not bookReview:
             return errorPage("Ensure all fields have valid information.")
 
@@ -180,6 +181,9 @@ def viewReview():
     row = db.execute("""SELECT review.*, users.username FROM review 
                      JOIN users ON users.id = review.user_id
                      WHERE review.review_id = ?""", reviewID)
+    # Convert <br>'s to newlines in plaintext
+    row[0]["review"] = row[0]["review"].replace("<br>", "\n")
+
     star = "&#9733; "
 
     # Get comments for this review
@@ -247,7 +251,7 @@ def updateReview():
                    WHERE user_id = ? AND title = ? AND author = ?""",
                      rating, review, session["user_id"], title, author)
         
-        return redirect(url_for("viewReview", review_title=title, review_author=author))
+        return redirect("/")
     
     else:
         query = request.args.get("q")
@@ -267,7 +271,9 @@ def updateReview():
         title = row[0]["title"]
         author = row[0]["author"]
         rating = row[0]["rating"]
+        row[0]["review"] = row[0]["review"].replace("<br>", "\n")
         review = row[0]["review"]
+
         username = db.execute("SELECT username FROM users WHERE id = ?", session["user_id"])
 
         return render_template("/update-review.html", title=title, author=author, 
