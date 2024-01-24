@@ -51,6 +51,6 @@ def clearOriginalAuthorTitle():
     session.pop("originalTitle", None)
 
 # error page
-def errorPage(message, code=400):
+def errorPage(message, code):
     """Render message so as to inform user of an error"""
     return render_template("error.html", code=code, message=message)

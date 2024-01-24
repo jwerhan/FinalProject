@@ -22,7 +22,7 @@ app = Flask(__name__)
 # Configure session to use filesystem (instead of signed cookies)
 app.config["SESSION_TYPE"] = "filesystem"
 app.config["SESSION_PERMANENT"] = False
-app.config["SESSION_COOKIE_SECURE"] = False  # Not secure cookies for production only #FIXME:
+app.config["SESSION_COOKIE_SECURE"] = False  #FIXME: Not secure cookies for local testing only 
 app.config["SESSION_COOKIE_HTTPONLY"] = True  # Enable HttpOnly cookies
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"  # Set SameSite attribute to Lax
 # Set secret key
@@ -74,7 +74,8 @@ def search():
         query = request.args.get("q")
         q = query
         if not query:
-            return errorPage("Please enter a valid search query", 400)
+            # return errorPage("Please enter a valid search query", 400)
+            return render_template("no-results.html")
 
         query = "%" + query + "%"
 

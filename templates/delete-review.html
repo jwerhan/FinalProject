@@ -1,45 +1,32 @@
-{% extends "layout.html" %}
+{% extends "layout.html" %} {% block title %} - Delete - {{title}} {% endblock
+%} {% block main %}
 
-{% block title %}
-        - Delete - {{title}}
-{% endblock %}
+<h1>Delete Review:</h1>
+<div class="card">
+	<div class="card-body">
+		<h5 class="card-title">{{title}}</h5>
+		<h6 class="card-subtitle mb-2 text-muted">{{author}}</h6>
+		<blockquote class="blockquote mb-0">
+			<div class="review-container">
+				<textarea
+					style="max-height: 50vh"
+					id="review-text-area"
+					readonly
+					class="form-control small border-0 mb-1">
+{{ review[0]['review'] }}</textarea
+				>
+			</div>
+		</blockquote>
+		<form action="/delete-review" method="POST">
+			<input type="hidden" name="q" class="d-none" value="{{ title }}" />
+			<input
+				type="hidden"
+				name="author"
+				class="d-none"
+				value="{{ author }}" />
+			<button class="btn btn-danger" type="submit">Confirm Delete</button>
+		</form>
+	</div>
+</div>
 
-{% block main %}
-
-        <h1>Delete Review:</h1>
-        <div class="card">
-                <div class="card-body">
-                        <h5 class="card-title">{{title}}</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">{{author}}</h6>
-                        <div class="review-container">
-                                <textarea style="max-height: 50vh" id="review-text-area" readonly 
-                                class="form-control small border-0 mb-1">{{ review[0]['review'] }}
-                        </textarea>
-                        </div>
-                        <form action="/delete-review" method="POST">
-                                <input type="hidden" name="q" class="d-none" value="{{ title }}">
-                                <input type="hidden" name="author" class="d-none" value="{{ author }}">
-                                <button class="btn btn-danger" type="submit">Confirm Delete</button>
-                        </form>
-                </div>
-        </div>
-
-
-<script>
-        var reviewTextArea = document.getElementById("review-text-area");
-        var maxHeight = "50vh";
-        if (reviewTextArea.scrollHeight > reviewTextArea.offsetHeight) {
-            reviewTextArea.style.height = Math.min(reviewTextArea.scrollHeight, parseInt(maxHeight)) + "px";
-        } else {
-            reviewTextArea.style.height = maxHeight;
-        }
-        autosize(reviewTextArea);
-        
-        // Enable Bootstrap tooltips
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl)
-        })
-    </script>
-    
 {% endblock %}
