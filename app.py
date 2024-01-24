@@ -346,8 +346,8 @@ def deleteReview():
     if request.method == "POST":
         title = request.form.get("q")
         author = request.form.get("author")
-        db.execute("DELETE * FROM review WHERE user_id = ? AND title = ? AND author = ?",
-                   session["user_id"], title, author)
+        db.execute("DELETE FROM review WHERE user_id = ? AND title = ? AND author = ?", 
+           session["user_id"], title, author)
         return redirect("/")
     else:
         title = request.args.get("q")
